@@ -20,14 +20,14 @@ export const useProductStore = create<ProductStore>()(
         const newProduct: ProductVariant = {
           ...prod,
           id: `prod-${Date.now()}`,
-          isLowStock: prod.stock <= 5,
+          isLowStock: prod.stock <= 10,
         };
         return { products: [newProduct, ...state.products] };
       }),
 
       updateProduct: (id, updatedProd) => set((state) => ({
         products: state.products.map((p) => 
-          p.id === id ? { ...p, ...updatedProd, isLowStock: (updatedProd.stock ?? p.stock) <= 5 } : p
+          p.id === id ? { ...p, ...updatedProd, isLowStock: (updatedProd.stock ?? p.stock) <= 10 } : p
         )
       })),
 
@@ -44,7 +44,7 @@ export const useProductStore = create<ProductStore>()(
               return {
                 ...prod,
                 stock: newStock,
-                isLowStock: newStock <= 5,
+                isLowStock: newStock <= 10,
               };
             }
             return prod;

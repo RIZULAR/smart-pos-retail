@@ -190,13 +190,13 @@ export const InventoryDashboard: React.FC = () => {
                     Rp {p.price.toLocaleString('id-ID')}
                   </td>
                   <td className="py-3 px-6">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${p.stock <= 0 ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : p.stock <= 5 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-slate-800 text-slate-300 border border-slate-700'}`}>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${p.stock <= 0 ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : p.stock <= 10 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-slate-800 text-slate-300 border border-slate-700'}`}>
                       {p.stock} item
                     </span>
                   </td>
                   <td className="py-3 px-6 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      {p.stock <= 5 && (
+                      {p.stock <= 10 && (
                         <button onClick={() => openQuickRestock(p)} className="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-colors text-xs font-bold flex items-center gap-1 shadow-md shadow-rose-500/20" title="Isi Ulang Stok">
                           Restock Cepat
                         </button>
