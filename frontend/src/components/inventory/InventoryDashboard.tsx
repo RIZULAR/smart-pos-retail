@@ -247,8 +247,15 @@ export const InventoryDashboard: React.FC = () => {
       {quickRestockTarget && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden p-6 text-center">
-            <div className="w-16 h-16 bg-rose-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Package className="text-rose-500" size={32} />
+            <div className="w-20 h-20 mx-auto mb-4 relative">
+              <img 
+                src={quickRestockTarget.imageUrl} 
+                alt={quickRestockTarget.name} 
+                className="w-full h-full object-cover rounded-2xl border-2 border-slate-700 shadow-lg"
+              />
+              <div className="absolute -bottom-2 -right-2 bg-rose-500 text-white p-1.5 rounded-full shadow-lg border-2 border-slate-900">
+                <Package size={14} />
+              </div>
             </div>
             <h2 className="text-lg font-bold text-white mb-1">Isi Ulang Stok</h2>
             <p className="text-sm text-slate-400 mb-6">
