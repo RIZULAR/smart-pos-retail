@@ -81,8 +81,9 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ scanIndicator }) => {
                       <AlertCircle size={12} /> Sisa: {product.stock}
                     </div>
                   ) : (
-                    <div className="absolute top-2 right-2 bg-slate-900/80 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-slate-300 border border-slate-700 z-10">
-                      Stock: {product.stock}
+                    <div className="absolute top-2 right-2 bg-emerald-950/80 text-emerald-400 backdrop-blur-sm px-2 py-1.5 rounded text-[10px] font-bold border border-emerald-800/50 flex items-center gap-1.5 z-10 shadow-sm">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      Tersedia: {product.stock}
                     </div>
                   )}
                   <img src={product.imageUrl} alt={product.name} className={`object-cover h-full w-full transition-transform duration-300 ${!isOutOfStock && 'group-hover:scale-105'}`} />
