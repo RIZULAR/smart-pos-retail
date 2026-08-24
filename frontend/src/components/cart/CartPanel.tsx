@@ -87,18 +87,7 @@ export const CartPanel: React.FC = () => {
             <span>Rp {subtotal.toLocaleString('id-ID')}</span>
           </div>
           <div className="flex justify-between items-center text-slate-400 text-sm">
-            <div className="flex items-center gap-2">
-              <span>PPN (11%)</span>
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleTax();
-                }}
-                className={`w-8 h-4 rounded-full relative transition-colors ${useTax ? 'bg-indigo-500' : 'bg-slate-700'}`}
-              >
-                <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${useTax ? 'left-4.5 right-0.5' : 'left-0.5'}`} style={useTax ? { right: '2px' } : { left: '2px' }}></div>
-              </button>
-            </div>
+            <span>PPN (11%)</span>
             <span>Rp {tax.toLocaleString('id-ID')}</span>
           </div>
 
