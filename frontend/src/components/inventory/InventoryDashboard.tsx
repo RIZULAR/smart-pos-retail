@@ -79,6 +79,19 @@ export const InventoryDashboard: React.FC = () => {
     }
   };
 
+  const handleQuickRestock = (product: ProductVariant) => {
+    const amountStr = window.prompt(`Isi ulang stok untuk "${product.name}".\nStok saat ini: ${product.stock}\n\nMasukkan jumlah barang masuk (tambahan stok):`);
+    if (!amountStr) return;
+    
+    const amount = parseInt(amountStr, 10);
+    if (isNaN(amount) || amount <= 0) {
+      alert('Jumlah tidak valid! Harap masukkan angka yang benar.');
+      return;
+    }
+    
+    updateProduct(product.id, { stock: product.stock + amount });
+  };
+
   return (
     <div className="flex-1 bg-slate-950 p-8 overflow-y-auto">
       
@@ -152,8 +165,8 @@ export const InventoryDashboard: React.FC = () => {
                   <td className="py-3 px-6 text-right">
                     <div className="flex items-center justify-end gap-2">
                       {p.stock <= 5 && (
-                        <button onClick={() => handleOpenModal(p)} className="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-colors text-xs font-bold flex items-center gap-1 shadow-md shadow-rose-500/20" title="Isi Ulang Stok">
-                          Restock
+                        <button onClick={() => handleQuickRestock(p)} className="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-colors text-xs font-bold flex items-center gap-1 shadow-md shadow-rose-500/20" title="Isi Ulang Stok">
+                          Restock Cepat
                         </button>
                       )}
                       <button onClick={() => handleOpenModal(p)} className="p-2 bg-slate-800 hover:bg-indigo-600 text-slate-300 hover:text-white rounded-lg transition-colors" title="Edit Master Data">
