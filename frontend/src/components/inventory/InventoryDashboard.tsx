@@ -178,7 +178,11 @@ export const InventoryDashboard: React.FC = () => {
                       <img src={p.imageUrl} alt={p.name} className="w-10 h-10 rounded-lg object-cover border border-slate-700" />
                       <div>
                         <p className="font-bold text-white">{p.name}</p>
-                        {p.isLowStock && <p className="text-[10px] text-rose-400 font-medium flex items-center gap-1 mt-0.5"><AlertCircle size={10}/> Low Stock</p>}
+                        {p.stock <= 0 ? (
+                          <p className="text-[10px] text-rose-400 font-medium flex items-center gap-1 mt-0.5"><AlertCircle size={10}/> Habis</p>
+                        ) : p.stock <= 10 ? (
+                          <p className="text-[10px] text-amber-400 font-medium flex items-center gap-1 mt-0.5"><AlertCircle size={10}/> Low Stock</p>
+                        ) : null}
                       </div>
                     </div>
                   </td>
@@ -190,7 +194,7 @@ export const InventoryDashboard: React.FC = () => {
                     Rp {p.price.toLocaleString('id-ID')}
                   </td>
                   <td className="py-3 px-6">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${p.stock <= 0 ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : p.stock <= 10 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-slate-800 text-slate-300 border border-slate-700'}`}>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${p.stock <= 0 ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : p.stock <= 10 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}`}>
                       {p.stock} item
                     </span>
                   </td>
