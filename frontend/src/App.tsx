@@ -10,17 +10,18 @@ import { CartPanel } from './components/cart/CartPanel';
 import { LoginScreen } from './components/auth/LoginScreen';
 import { ShiftOpenModal } from './components/shift/ShiftOpenModal';
 import { ReportsDashboard } from './components/reports/ReportsDashboard';
+import { InventoryDashboard } from './components/inventory/InventoryDashboard';
 import { CustomerMenu } from './components/customer/CustomerMenu';
 
 function App() {
   const { addItem } = useCartStore();
   const { user, activeShift } = useAuthStore();
   const [scanIndicator, setScanIndicator] = useState(false);
-  const [activeTab, setActiveTab] = useState<'pos' | 'reports'>('pos');
+  const [activeTab, setActiveTab] = useState<'pos' | 'reports' | 'inventory'>('pos');
 
   // Enforce role-based access for tabs
   React.useEffect(() => {
-    if (user?.role === 'CASHIER' && activeTab === 'reports') {
+    if (user?.role === 'CASHIER' && (activeTab === 'reports' || activeTab === 'inventory')) {
       setActiveTab('pos');
     }
   }, [user, activeTab]);
@@ -85,9 +86,10 @@ function App() {
             {/* RIGHT COLUMN: Cart & Checkout */}
             <CartPanel />
           </>
-        ) : (
-          /* Reports & Analytics Dashboard */
+        ) : activeTab === 'reports' ? (
           <ReportsDashboard />
+        ) : (
+          <InventoryDashboard />
         )}
       </div>
 
