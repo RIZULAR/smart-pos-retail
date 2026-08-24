@@ -44,12 +44,15 @@ export const Header: React.FC<HeaderProps> = ({ scanIndicator, activeTab, setAct
         >
           <Store size={16} /> Terminal Kasir
         </button>
-        <button
-          onClick={() => setActiveTab('reports')}
-          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'reports' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}`}
-        >
-          <LayoutDashboard size={16} /> Laporan & Analitik
-        </button>
+        
+        {user?.role !== 'CASHIER' && (
+          <button
+            onClick={() => setActiveTab('reports')}
+            className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'reports' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}`}
+          >
+            <LayoutDashboard size={16} /> Laporan & Analitik
+          </button>
+        )}
       </div>
 
       <div className="flex items-center gap-4">

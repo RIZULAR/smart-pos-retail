@@ -18,6 +18,13 @@ function App() {
   const [scanIndicator, setScanIndicator] = useState(false);
   const [activeTab, setActiveTab] = useState<'pos' | 'reports'>('pos');
 
+  // Enforce role-based access for tabs
+  React.useEffect(() => {
+    if (user?.role === 'CASHIER' && activeTab === 'reports') {
+      setActiveTab('pos');
+    }
+  }, [user, activeTab]);
+
   // Simple routing for Customer E-Menu
   if (window.location.pathname === '/menu') {
     return <CustomerMenu />;

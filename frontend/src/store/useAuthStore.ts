@@ -30,12 +30,14 @@ export const useAuthStore = create<AuthState>()(
             return false;
           }
 
+          const isAdmin = email.toLowerCase().includes('admin');
+
           set({ 
             user: { 
               id: data.user.id, 
               username: data.user.email?.split('@')[0] || 'kasir', 
-              fullName: 'Kasir Utama', 
-              role: 'CASHIER' 
+              fullName: isAdmin ? 'Administrator' : 'Kasir Utama', 
+              role: isAdmin ? 'ADMIN' : 'CASHIER' 
             } 
           });
           return true;
