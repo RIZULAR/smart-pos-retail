@@ -12,7 +12,7 @@ interface PaymentModalProps {
 }
 
 export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
-  const { items, subtotal, tax, grandTotal, clearCart } = useCartStore();
+  const { items, subtotal, tax, serviceCharge, grandTotal, clearCart } = useCartStore();
   const { generateReceipt, printReceipt } = useThermalPrinter();
   const { enqueueOrder } = useOfflineQueue();
   
@@ -52,7 +52,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) =
     
     // Print Receipt
     const actualTender = paymentMethod === 'CASH' ? parsedTender : grandTotal;
-    const bytecode = generateReceipt(items, subtotal, tax, grandTotal, actualTender, change, paymentMethod);
+    const bytecode = generateReceipt(items, subtotal, tax, serviceCharge, grandTotal, actualTender, change, paymentMethod);
     await printReceipt(bytecode);
     
     // Enqueue to Offline Queue
@@ -106,6 +106,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) =
                 <div className="flex justify-between text-slate-400">
                   <span>PPN (11%)</span>
                   <span>Rp {tax.toLocaleString('id-ID')}</span>
+                </div>
+                <div className="flex justify-between text-slate-400">
+                  <span>Service Charge (5%)</span>
+                  <span>Rp {serviceCharge.toLocaleString('id-ID')}</span>
                 </div>
               </div>
             </div>
@@ -314,6 +318,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) =
                   <div className="flex">
                     <span>PPN (11%)</span>
                     <span>{tax.toLocaleString('id-ID')}</span>
+                  </div>
+                  <div className="flex">
+                    <span>Svc Chg (5%)</span>
+                    <span>{serviceCharge.toLocaleString('id-ID')}</span>
                   </div>
                   <div className="flex bold text-sm mt-2 pt-2 solid border-t border-black">
                     <span>TOTAL</span>
