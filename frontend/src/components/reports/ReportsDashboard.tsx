@@ -22,54 +22,54 @@ interface TransactionRecord {
   created_at: string;
 }
 
+import { useTransactionStore } from '../../store/useTransactionStore';
+
 export const ReportsDashboard: React.FC = () => {
   const [timeRange, setTimeRange] = useState<'today' | 'week' | 'month' | 'all'>('today');
-  const [transactions, setTransactions] = useState<TransactionRecord[]>([]);
+  const { transactions, fetchTransactions } = useTransactionStore();
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch transactions from Supabase
   useEffect(() => {
-    fetchReportData();
-  }, [timeRange]);
+    fetchTransactions();
+  }, []);
 
-  const fetchReportData = async () => {
+  const handleRefresh = async () => {
     setIsLoading(true);
-    try {
-      let query = supabase.from('transactions').select('*').order('created_at', { ascending: false });
-
-      const now = new Date();
-      if (timeRange === 'today') {
-        const startOfDay = new Date(now.setHours(0,0,0,0)).toISOString();
-        query = query.gte('created_at', startOfDay);
-      } else if (timeRange === 'week') {
-        const startOfWeek = new Date(now.setDate(now.getDate() - 7)).toISOString();
-        query = query.gte('created_at', startOfWeek);
-      } else if (timeRange === 'month') {
-        const startOfMonth = new Date(now.setMonth(now.getMonth() - 1)).toISOString();
-        query = query.gte('created_at', startOfMonth);
-      }
-
-      const { data, error } = await query;
-      if (error) throw error;
-      setTransactions(data || []);
-    } catch (e) {
-      console.error("Failed to fetch reports:", e);
-    } finally {
-      setIsLoading(false);
-    }
+    await fetchTransactions();
+    setIsLoading(false);
   };
 
+  // Filter transactions based on selected time range
+  const filteredTransactions = transactions.filter((tx) => {
+    if (timeRange === 'all') return true;
+    const txDate = new Date(tx.created_at);
+    const now = new Date();
+    
+    if (timeRange === 'today') {
+      return txDate.toDateString() === now.toDateString();
+    } else if (timeRange === 'week') {
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(now.getDate() - 7);
+      return txDate >= sevenDaysAgo;
+    } else if (timeRange === 'month') {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(now.getDate() - 30);
+      return txDate >= thirtyDaysAgo;
+    }
+    return true;
+  });
+
   // Metric Calculations
-  const totalRevenue = transactions.reduce((acc, curr) => acc + Number(curr.grand_total), 0);
-  const totalOrders = transactions.length;
+  const totalRevenue = filteredTransactions.reduce((acc, curr) => acc + Number(curr.grand_total), 0);
+  const totalOrders = filteredTransactions.length;
   // Estimated Profit (Assuming average 35% margin for retail)
   const estimatedProfit = totalRevenue * 0.35;
   const avgBasketSize = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
   // Payment Breakdown
-  const cashTotal = transactions.filter(t => t.payment_method === 'CASH').reduce((acc, c) => acc + Number(c.grand_total), 0);
-  const qrisTotal = transactions.filter(t => t.payment_method === 'QRIS').reduce((acc, c) => acc + Number(c.grand_total), 0);
-  const debitTotal = transactions.filter(t => t.payment_method === 'DEBIT').reduce((acc, c) => acc + Number(c.grand_total), 0);
+  const cashTotal = filteredTransactions.filter(t => t.payment_method === 'CASH').reduce((acc, c) => acc + Number(c.grand_total), 0);
+  const qrisTotal = filteredTransactions.filter(t => t.payment_method === 'QRIS').reduce((acc, c) => acc + Number(c.grand_total), 0);
+  const debitTotal = filteredTransactions.filter(t => t.payment_method === 'DEBIT').reduce((acc, c) => acc + Number(c.grand_total), 0);
 
   return (
     <div className="flex-1 bg-slate-950 p-8 overflow-y-auto">
@@ -231,7 +231,7 @@ export const ReportsDashboard: React.FC = () => {
               <h3 className="text-lg font-bold text-white">Riwayat Transaksi Terakhir</h3>
               <p className="text-slate-400 text-xs mt-0.5">Daftar nota penjualan yang tersimpan di Cloud Database</p>
             </div>
-            <button onClick={fetchReportData} className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition-colors">
+            <button onClick={handleRefresh} className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition-colors">
               Refresh
             </button>
           </div>
@@ -251,12 +251,12 @@ export const ReportsDashboard: React.FC = () => {
                   <tr>
                     <td colSpan={4} className="text-center py-8 text-slate-500">Memuat data dari database...</td>
                   </tr>
-                ) : transactions.length === 0 ? (
+                ) : filteredTransactions.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="text-center py-8 text-slate-500">Belum ada transaksi di periode ini.</td>
                   </tr>
                 ) : (
-                  transactions.slice(0, 8).map((tx) => (
+                  filteredTransactions.slice(0, 15).map((tx) => (
                     <tr key={tx.id} className="hover:bg-slate-800/40 transition-colors">
                       <td className="py-3.5 px-4 font-mono font-medium text-indigo-400">{tx.invoice_number}</td>
                       <td className="py-3.5 px-4 text-slate-400 text-xs">
