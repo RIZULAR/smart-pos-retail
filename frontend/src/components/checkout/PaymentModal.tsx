@@ -283,11 +283,11 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) =
                 <div className="dashed"></div>
                 
                 {/* Meta Info */}
-                <div className="flex text-xs mb-1">
+                <div className="flex justify-between text-xs mb-1">
                   <span>{new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' })}</span>
                   <span>INV-{Date.now().toString().slice(-6)}</span>
                 </div>
-                <div className="flex text-xs mb-3">
+                <div className="flex justify-between text-xs mb-3">
                   <span>Kasir: {useAuthStore.getState().user?.username.toUpperCase() || 'KASIR'}</span>
                   <span>POS-01</span>
                 </div>
@@ -299,7 +299,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) =
                   {items.map(item => (
                     <div key={item.variant.id} className="text-xs">
                       <div className="bold">{item.variant.name}</div>
-                      <div className="flex text-gray-800">
+                      <div className="flex justify-between text-gray-800">
                         <span>{item.quantity} x {item.variant.price.toLocaleString('id-ID')}</span>
                         <span>{item.subtotal.toLocaleString('id-ID')}</span>
                       </div>
@@ -311,19 +311,19 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) =
                 
                 {/* Totals */}
                 <div className="flex flex-col gap-1 text-xs">
-                  <div className="flex">
+                  <div className="flex justify-between">
                     <span>Subtotal</span>
                     <span>{subtotal.toLocaleString('id-ID')}</span>
                   </div>
-                  <div className="flex">
+                  <div className="flex justify-between">
                     <span>PPN (11%)</span>
                     <span>{tax.toLocaleString('id-ID')}</span>
                   </div>
-                  <div className="flex">
+                  <div className="flex justify-between">
                     <span>Svc Chg (5%)</span>
                     <span>{serviceCharge.toLocaleString('id-ID')}</span>
                   </div>
-                  <div className="flex bold text-sm mt-2 pt-2 solid border-t border-black">
+                  <div className="flex justify-between bold text-sm mt-2 pt-2 solid border-t border-black">
                     <span>TOTAL</span>
                     <span>Rp {grandTotal.toLocaleString('id-ID')}</span>
                   </div>
@@ -333,11 +333,11 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) =
                 
                 {/* Payment */}
                 <div className="flex flex-col gap-1 text-xs">
-                  <div className="flex uppercase">
+                  <div className="flex justify-between uppercase">
                     <span>{paymentMethod}</span>
                     <span>{paymentMethod === 'CASH' ? parsedTender.toLocaleString('id-ID') : grandTotal.toLocaleString('id-ID')}</span>
                   </div>
-                  <div className="flex bold">
+                  <div className="flex justify-between bold">
                     <span>KEMBALI</span>
                     <span>Rp {change.toLocaleString('id-ID')}</span>
                   </div>
