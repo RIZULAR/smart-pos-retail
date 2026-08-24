@@ -52,8 +52,9 @@ function App() {
     return <LoginScreen />;
   }
 
-  // 2. If logged in but no active shift, show Shift Open Modal (layered over background)
-  if (user && !activeShift) {
+  // 2. If logged in but no active shift, show Shift Open Modal
+  // ADMIN users bypass the shift requirement so they can view reports directly
+  if (user && !activeShift && user.role !== 'ADMIN') {
     return (
       <div className="flex h-screen bg-slate-900 overflow-hidden">
         <ShiftOpenModal />
