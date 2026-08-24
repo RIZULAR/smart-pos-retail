@@ -12,10 +12,17 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ scanIndicator }) => {
   const { addItem } = useCartStore();
   const { products } = useProductStore();
 
-  const filteredProducts = products.filter(p => 
-    p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    p.sku.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProducts = products
+    .filter(p => 
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      p.sku.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      // Put out-of-stock items at the very end
+      if (a.stock <= 0 && b.stock > 0) return 1;
+      if (a.stock > 0 && b.stock <= 0) return -1;
+      return 0;
+    });
 
   return (
     <div className="flex-1 flex flex-col min-w-[60%] border-r border-slate-700/50 overflow-hidden">
