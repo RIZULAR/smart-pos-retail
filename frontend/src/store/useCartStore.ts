@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { CartItem, ProductVariant } from '../types/pos';
+import { useProductStore } from './useProductStore';
 
 interface CartState {
   items: CartItem[];
@@ -43,11 +44,26 @@ export const useCartStore = create<CartState>((set) => ({
     useServiceCharge: !state.useServiceCharge,
     ...calculateTotals(state.items, state.useTax, !state.useServiceCharge)
   })),
-  
+
   addItem: (variant) => set((state) => {
+    // Get live available stock
+    const liveProduct = useProductStore.getState().products.find(p => p.id === variant.id);
+    const availableStock = liveProduct ? liveProduct.stock : variant.stock;
+
     const existingItem = state.items.find(item => item.variant.id === variant.id);
+    const currentQty = existingItem ? existingItem.quantity : 0;
+
+    if (availableStock <= 0) {
+      alert(`Stok "${variant.name}" sudah HABIS!`);
+      return state;
+    }
+
+    if (currentQty + 1 > availableStock) {
+      alert(`Stok "${variant.name}" tersisa ${availableStock} item. Tidak bisa menambah lagi.`);
+      return state;
+    }
+
     let newItems;
-    
     if (existingItem) {
       newItems = state.items.map(item => 
         item.variant.id === variant.id 
@@ -72,6 +88,14 @@ export const useCartStore = create<CartState>((set) => ({
       return { items: newItems, ...calculateTotals(newItems, state.useTax, state.useServiceCharge) };
     }
     
+    const liveProduct = useProductStore.getState().products.find(p => p.id === variantId);
+    const availableStock = liveProduct ? liveProduct.stock : 9999;
+
+    if (quantity > availableStock) {
+      alert(`Stok maksimal yang tersedia hanya ${availableStock} item.`);
+      quantity = availableStock;
+    }
+
     const newItems = state.items.map(item => 
       item.variant.id === variantId 
         ? { ...item, quantity, subtotal: quantity * item.variant.price }

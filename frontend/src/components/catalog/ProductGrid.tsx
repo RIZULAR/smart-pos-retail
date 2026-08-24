@@ -53,32 +53,42 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ scanIndicator }) => {
       <div className="flex-1 overflow-y-auto p-6 bg-slate-900">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           
-          {filteredProducts.map((product) => (
-            <div 
-              key={product.id}
-              onClick={() => addItem(product)}
-              className={`bg-slate-800 rounded-xl border overflow-hidden transition-all cursor-pointer group flex flex-col h-full relative ${product.isLowStock ? 'border-rose-900/50 hover:border-rose-500/50 hover:shadow-[0_0_15px_rgba(244,63,94,0.1)]' : 'border-slate-700/50 hover:border-indigo-500/50 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)]'}`}
-            >
-              <div className="aspect-square bg-slate-700/50 flex items-center justify-center relative overflow-hidden">
-                {product.isLowStock ? (
-                  <div className="absolute top-2 right-2 bg-rose-500/90 text-white backdrop-blur-sm px-2 py-1 rounded text-xs font-medium border border-rose-500/30 flex items-center gap-1 z-10">
-                    <AlertCircle size={12} /> Stock: {product.stock}
+          {filteredProducts.map((product) => {
+            const isOutOfStock = product.stock <= 0;
+
+            return (
+              <div 
+                key={product.id}
+                onClick={() => !isOutOfStock && addItem(product)}
+                className={`bg-slate-800 rounded-xl border overflow-hidden transition-all flex flex-col h-full relative ${isOutOfStock ? 'opacity-50 cursor-not-allowed border-slate-800' : 'cursor-pointer group ' + (product.isLowStock ? 'border-rose-900/50 hover:border-rose-500/50 hover:shadow-[0_0_15px_rgba(244,63,94,0.1)]' : 'border-slate-700/50 hover:border-indigo-500/50 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)]')}`}
+              >
+                <div className="aspect-square bg-slate-700/50 flex items-center justify-center relative overflow-hidden">
+                  {isOutOfStock ? (
+                    <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center z-20">
+                      <span className="bg-rose-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg">
+                        Stok Habis
+                      </span>
+                    </div>
+                  ) : product.isLowStock ? (
+                    <div className="absolute top-2 right-2 bg-rose-500/90 text-white backdrop-blur-sm px-2 py-1 rounded text-xs font-medium border border-rose-500/30 flex items-center gap-1 z-10">
+                      <AlertCircle size={12} /> Stock: {product.stock}
+                    </div>
+                  ) : (
+                    <div className="absolute top-2 right-2 bg-slate-900/80 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-slate-300 border border-slate-700 z-10">
+                      Stock: {product.stock}
+                    </div>
+                  )}
+                  <img src={product.imageUrl} alt={product.name} className={`object-cover h-full w-full transition-transform duration-300 ${!isOutOfStock && 'group-hover:scale-105'}`} />
+                </div>
+                <div className="p-4 flex flex-col flex-1">
+                  <h3 className="font-medium text-slate-200 line-clamp-2 text-sm">{product.name}</h3>
+                  <div className="mt-auto pt-2 flex items-center justify-between">
+                    <span className={`font-bold ${isOutOfStock ? 'text-slate-500 line-through' : 'text-emerald-400'}`}>Rp {product.price.toLocaleString('id-ID')}</span>
                   </div>
-                ) : (
-                  <div className="absolute top-2 right-2 bg-slate-900/80 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-slate-300 border border-slate-700 z-10">
-                    Stock: {product.stock}
-                  </div>
-                )}
-                <img src={product.imageUrl} alt={product.name} className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300" />
-              </div>
-              <div className="p-4 flex flex-col flex-1">
-                <h3 className="font-medium text-slate-200 line-clamp-2 text-sm">{product.name}</h3>
-                <div className="mt-auto pt-2 flex items-center justify-between">
-                  <span className="font-bold text-emerald-400">Rp {product.price.toLocaleString('id-ID')}</span>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
         </div>
       </div>
