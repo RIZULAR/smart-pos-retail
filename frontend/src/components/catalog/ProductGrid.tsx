@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Search, AlertCircle } from 'lucide-react';
-import { ProductVariant } from '../../types/pos';
-import { MOCK_PRODUCTS } from '../../data/mockProducts';
 import { useCartStore } from '../../store/useCartStore';
+import { useProductStore } from '../../store/useProductStore';
 
 interface ProductGridProps {
   scanIndicator: boolean;
@@ -11,8 +10,9 @@ interface ProductGridProps {
 export const ProductGrid: React.FC<ProductGridProps> = ({ scanIndicator }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const { addItem } = useCartStore();
+  const { products } = useProductStore();
 
-  const filteredProducts = MOCK_PRODUCTS.filter(p => 
+  const filteredProducts = products.filter(p => 
     p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     p.sku.toLowerCase().includes(searchQuery.toLowerCase())
   );

@@ -73,6 +73,9 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) =
       createdAt: new Date().toISOString()
     });
 
+    // Deduct stock in store
+    useProductStore.getState().deductStock(items);
+
     setIsProcessing(false);
     setIsSuccess(true);
   };

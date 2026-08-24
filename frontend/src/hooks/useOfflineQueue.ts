@@ -73,42 +73,42 @@ export function useOfflineQueue() {
     for (const order of pendingQueue) {
       try {
         // 1. Insert Transaction Header
-        const { error: txError } = await supabase.from('transactions').insert({
-          invoice_number: `INV-${new Date(order.createdAt).getTime().toString().slice(-6)}`,
-          shift_id: order.shiftId,
-          cashier_id: order.cashierId,
-          subtotal: order.subtotal,
-          tax: order.tax,
-          grand_total: order.grandTotal,
-          payment_method: order.paymentMethod,
-          tender_amount: order.tenderAmount,
-          change_amount: order.change,
-          created_at: order.createdAt
-        });
+        const invoiceNum = `INV-${new Date(order.createdAt).getTime().toString().slice(-6)}`;
+        const cashierIdClean = order.cashierId && order.cashierId.trim() !== '' ? order.cashierId : null;
+        const shiftIdClean = order.shiftId && order.shiftId.trim() !== '' ? order.shiftId : null;
 
-        if (txError) throw txError;
-
-        // Retrieve inserted transaction ID (since we don't have the UUID directly, we query it back)
-        // Wait, a better way is to generate the UUID on client, or let Supabase generate it and return it.
-        // Let's use `select()`
-        const { data: txData, error: selectError } = await supabase.from('transactions')
+        const { data: txData, error: txError } = await supabase
+          .from('transactions')
+          .insert({
+            invoice_number: invoiceNum,
+            shift_id: shiftIdClean,
+            cashier_id: cashierIdClean,
+            subtotal: order.subtotal,
+            tax: order.tax,
+            grand_total: order.grandTotal,
+            payment_method: order.paymentMethod,
+            tender_amount: order.tenderAmount,
+            change_amount: order.change,
+            created_at: order.createdAt
+          })
           .select('id')
-          .eq('invoice_number', `INV-${new Date(order.createdAt).getTime().toString().slice(-6)}`)
           .single();
 
-        if (selectError) throw selectError;
+        if (txError) throw txError;
         
         // 2. Insert Transaction Items
-        const itemsToInsert = order.items.map(item => ({
-          transaction_id: txData.id,
-          variant_id: item.variant.id,
-          quantity: item.quantity,
-          price_at_time: item.variant.price,
-          subtotal: item.subtotal
-        }));
+        if (order.items && order.items.length > 0) {
+          const itemsToInsert = order.items.map(item => ({
+            transaction_id: txData.id,
+            variant_id: item.variant.id,
+            quantity: item.quantity,
+            price_at_time: item.variant.price,
+            subtotal: item.subtotal
+          }));
 
-        const { error: itemsError } = await supabase.from('transaction_items').insert(itemsToInsert);
-        if (itemsError) throw itemsError;
+          const { error: itemsError } = await supabase.from('transaction_items').insert(itemsToInsert);
+          if (itemsError) console.warn("[SYNC] Warning inserting transaction_items:", itemsError);
+        }
 
         // If success, remove from array
         remainingQueue.shift();
