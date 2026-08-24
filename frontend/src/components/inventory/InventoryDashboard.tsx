@@ -10,12 +10,22 @@ export const InventoryDashboard: React.FC = () => {
   const [editingProduct, setEditingProduct] = useState<ProductVariant | null>(null);
 
   const [alert, setAlert] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+  const [isAlertClosing, setIsAlertClosing] = useState(false);
 
   const showAlert = (type: 'success' | 'error', message: string) => {
     setAlert({ type, message });
+    setIsAlertClosing(false);
+    
+    // Mulai animasi menghilang ke kanan setelah 1.5 detik
     setTimeout(() => {
-      setAlert(null);
-    }, 1500); // ilang otomatis dalam 1 1/2 detik
+      setIsAlertClosing(true);
+      
+      // Hapus elemen dari DOM setelah animasi selesai (300ms)
+      setTimeout(() => {
+        setAlert(null);
+        setIsAlertClosing(false);
+      }, 300);
+    }, 1500);
   };
 
   const [quickRestockTarget, setQuickRestockTarget] = useState<ProductVariant | null>(null);
@@ -299,7 +309,7 @@ export const InventoryDashboard: React.FC = () => {
 
       {/* Toast Notification */}
       {alert && (
-        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-top-4 duration-300">
+        <div className={`fixed top-6 right-6 z-[100] duration-300 ${isAlertClosing ? 'animate-out fade-out slide-out-to-right-8' : 'animate-in fade-in slide-in-from-top-8'}`}>
           {alert.type === 'success' ? (
             <div className="bg-emerald-50 text-sm p-4 rounded-xl border-2 border-emerald-200 shadow-2xl min-w-[300px]" role="alert">
               <div className="flex items-center gap-3 text-emerald-900 font-bold">
