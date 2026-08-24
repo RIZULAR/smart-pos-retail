@@ -55,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({ scanIndicator, activeTab, setAct
             </button>
             <button
               onClick={() => setActiveTab('inventory')}
-              className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'inventory' ? 'bg-amber-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}`}
+              className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'inventory' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}`}
             >
               <Package size={16} /> Manajemen Inventaris
             </button>
