@@ -26,3 +26,34 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #475569;
 }
+
+/* Toast Animations */
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(150%);
+    opacity: 0;
+  }
+}
+
+.animate-toast-in {
+  animation: slideInFromTop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-toast-out {
+  animation: slideOutToRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

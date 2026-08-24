@@ -309,7 +309,7 @@ export const InventoryDashboard: React.FC = () => {
 
       {/* Toast Notification */}
       {alert && (
-        <div className={`fixed top-6 right-6 z-[100] duration-300 ${isAlertClosing ? 'animate-out fade-out slide-out-to-right-8' : 'animate-in fade-in slide-in-from-top-8'}`}>
+        <div className={`fixed top-6 right-6 z-[100] ${isAlertClosing ? 'animate-toast-out' : 'animate-toast-in'}`}>
           {alert.type === 'success' ? (
             <div className="bg-emerald-50 text-sm p-4 rounded-xl border-2 border-emerald-200 shadow-2xl min-w-[300px]" role="alert">
               <div className="flex items-center gap-3 text-emerald-900 font-bold">
