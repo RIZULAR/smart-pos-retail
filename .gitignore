@@ -4,3 +4,13 @@ build/
 .env
 .DS_Store
 *.log
+
+# AI & PRD Documentation
+.ai-prd-workflow/
+.cursor/
+FEATURES.md
+PRD-REVIEW.md
+PRD.md
+RFCS.md
+RFCs/
+RULES.md
