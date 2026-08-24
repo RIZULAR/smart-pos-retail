@@ -4,7 +4,7 @@ import { useCartStore } from '../../store/useCartStore';
 import { PaymentModal } from '../checkout/PaymentModal';
 
 export const CartPanel: React.FC = () => {
-  const { items, subtotal, tax, grandTotal, removeItem, updateQuantity, clearCart } = useCartStore();
+  const { items, subtotal, tax, grandTotal, useTax, toggleTax, removeItem, updateQuantity, clearCart } = useCartStore();
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
   // Global F2 listener for Pay button
@@ -86,8 +86,19 @@ export const CartPanel: React.FC = () => {
             <span>Subtotal</span>
             <span>Rp {subtotal.toLocaleString('id-ID')}</span>
           </div>
-          <div className="flex justify-between text-slate-400 text-sm">
-            <span>PPN (11%)</span>
+          <div className="flex justify-between items-center text-slate-400 text-sm">
+            <div className="flex items-center gap-2">
+              <span>PPN (11%)</span>
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleTax();
+                }}
+                className={`w-8 h-4 rounded-full relative transition-colors ${useTax ? 'bg-indigo-500' : 'bg-slate-700'}`}
+              >
+                <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${useTax ? 'left-4.5 right-0.5' : 'left-0.5'}`} style={useTax ? { right: '2px' } : { left: '2px' }}></div>
+              </button>
+            </div>
             <span>Rp {tax.toLocaleString('id-ID')}</span>
           </div>
           <div className="flex justify-between text-rose-400 text-sm">
