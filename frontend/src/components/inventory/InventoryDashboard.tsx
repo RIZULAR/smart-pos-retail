@@ -16,16 +16,16 @@ export const InventoryDashboard: React.FC = () => {
     setAlert({ type, message });
     setIsAlertClosing(false);
     
-    // Mulai animasi menghilang ke kanan setelah 1.5 detik
+    // Mulai animasi menghilang ke kanan setelah 3 detik
     setTimeout(() => {
       setIsAlertClosing(true);
       
-      // Hapus elemen dari DOM setelah animasi selesai (300ms)
+      // Hapus elemen dari DOM setelah animasi selesai (400ms)
       setTimeout(() => {
         setAlert(null);
         setIsAlertClosing(false);
-      }, 300);
-    }, 1500);
+      }, 400);
+    }, 3000);
   };
 
   const [quickRestockTarget, setQuickRestockTarget] = useState<ProductVariant | null>(null);
