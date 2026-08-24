@@ -151,10 +151,15 @@ export const InventoryDashboard: React.FC = () => {
                   </td>
                   <td className="py-3 px-6 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <button onClick={() => handleOpenModal(p)} className="p-2 bg-slate-800 hover:bg-indigo-600 text-slate-300 hover:text-white rounded-lg transition-colors" title="Edit/Restock">
+                      {p.stock <= 5 && (
+                        <button onClick={() => handleOpenModal(p)} className="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-colors text-xs font-bold flex items-center gap-1 shadow-md shadow-rose-500/20" title="Isi Ulang Stok">
+                          Restock
+                        </button>
+                      )}
+                      <button onClick={() => handleOpenModal(p)} className="p-2 bg-slate-800 hover:bg-indigo-600 text-slate-300 hover:text-white rounded-lg transition-colors" title="Edit Master Data">
                         <Edit2 size={14} />
                       </button>
-                      <button onClick={() => handleDelete(p.id)} className="p-2 bg-slate-800 hover:bg-rose-600 text-slate-300 hover:text-white rounded-lg transition-colors" title="Hapus">
+                      <button onClick={() => handleDelete(p.id)} className="p-2 bg-slate-800 hover:bg-rose-600 text-slate-300 hover:text-white rounded-lg transition-colors" title="Hapus Produk">
                         <Trash2 size={14} />
                       </button>
                     </div>
