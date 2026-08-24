@@ -31,8 +31,8 @@ export const Header: React.FC<HeaderProps> = ({ scanIndicator, activeTab, setAct
           <ScanLine size={20} />
         </div>
         <div>
-          <h1 className="text-xl font-bold leading-tight">MyTRA Retail</h1>
-          <p className="text-xs text-slate-400">Cashier: {user?.fullName}</p>
+          <h1 className="text-xl font-bold leading-tight">MyTRA Resto & Cafe</h1>
+          <p className="text-xs text-slate-400 font-medium">Kasir: {user?.fullName}</p>
         </div>
       </div>
 

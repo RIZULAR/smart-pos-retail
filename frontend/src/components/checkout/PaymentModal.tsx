@@ -270,10 +270,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) =
                 
                 {/* Header */}
                 <div className="center mb-4">
-                  <h2 className="bold text-xl mb-1 tracking-widest">MyTRA POS</h2>
-                  <div className="text-xs text-gray-700">RETAIL STORE V1.0</div>
-                  <div className="text-xs text-gray-700">Jl. Sudirman Kav. 12, Jakarta</div>
-                  <div className="text-xs text-gray-700">Telp: 021-12345678</div>
+                  <h2 className="bold text-xl mb-1 tracking-widest">MyTRA RESTO</h2>
+                  <div className="text-xs text-gray-700">RESTO & CAFE V1.0</div>
+                  <div className="text-xs text-gray-700">Jl. Culinary Hub No. 88, Jakarta</div>
+                  <div className="text-xs text-gray-700">Telp: 021-88997766</div>
                 </div>
                 
                 <div className="dashed"></div>
