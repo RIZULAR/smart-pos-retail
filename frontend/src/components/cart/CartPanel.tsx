@@ -4,7 +4,7 @@ import { useCartStore } from '../../store/useCartStore';
 import { PaymentModal } from '../checkout/PaymentModal';
 
 export const CartPanel: React.FC = () => {
-  const { items, subtotal, tax, grandTotal, useTax, toggleTax, removeItem, updateQuantity, clearCart } = useCartStore();
+  const { items, subtotal, tax, serviceCharge, grandTotal, useTax, toggleTax, removeItem, updateQuantity, clearCart } = useCartStore();
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
   // Global F2 listener for Pay button
@@ -101,6 +101,12 @@ export const CartPanel: React.FC = () => {
             </div>
             <span>Rp {tax.toLocaleString('id-ID')}</span>
           </div>
+
+          <div className="flex justify-between items-center text-slate-400 text-sm">
+            <span>Service Charge (5%)</span>
+            <span>Rp {serviceCharge.toLocaleString('id-ID')}</span>
+          </div>
+
           <div className="flex justify-between text-rose-400 text-sm">
             <span>Discount</span>
             <span>- Rp 0</span>

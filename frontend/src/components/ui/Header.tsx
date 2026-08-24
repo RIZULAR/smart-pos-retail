@@ -1,7 +1,8 @@
-import React from 'react';
-import { LogOut, ScanLine, WifiOff, RefreshCw, LayoutDashboard, Store } from 'lucide-react';
+import React, { useState } from 'react';
+import { LogOut, ScanLine, WifiOff, RefreshCw, LayoutDashboard, Store, Settings } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useOfflineQueue } from '../../hooks/useOfflineQueue';
+import { SettingsModal } from './SettingsModal';
 
 interface HeaderProps {
   scanIndicator: boolean;
@@ -12,6 +13,7 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ scanIndicator, activeTab, setActiveTab }) => {
   const { user, activeShift, logout, closeShift } = useAuthStore();
   const { queueCount, isOnline, syncQueue } = useOfflineQueue();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const handleLogout = () => {
     if (activeShift) {
@@ -67,6 +69,15 @@ export const Header: React.FC<HeaderProps> = ({ scanIndicator, activeTab, setAct
           </div>
         )}
 
+        {/* Settings Button */}
+        <button 
+          onClick={() => setIsSettingsOpen(true)}
+          className="p-2 text-slate-400 hover:bg-slate-800 rounded-xl transition-colors"
+          title="Pengaturan"
+        >
+          <Settings size={20} />
+        </button>
+
         {activeShift && (
           <div className="flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-full text-sm border border-slate-700 cursor-pointer hover:bg-slate-700" onClick={handleLogout} title="Click to close shift">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -78,6 +89,8 @@ export const Header: React.FC<HeaderProps> = ({ scanIndicator, activeTab, setAct
           <LogOut size={20} />
         </button>
       </div>
+
+      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </header>
   );
 };
