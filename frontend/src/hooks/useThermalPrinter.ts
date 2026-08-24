@@ -27,19 +27,29 @@ export function useThermalPrinter() {
     text += "Jl. Culinary Hub No. 88, Jakarta\n";
     text += "================================\n" + ESC_ALIGN_LEFT;
 
+    const formatLine = (left: string, right: string) => {
+      const MAX_LEN = 32;
+      const totalLen = left.length + right.length;
+      if (totalLen >= MAX_LEN) return left + " " + right + "\n";
+      const spaces = " ".repeat(MAX_LEN - totalLen);
+      return left + spaces + right + "\n";
+    };
+
     items.forEach((item) => {
       text += `${item.variant.name}\n`;
-      text += `  ${item.quantity} x Rp ${item.variant.price.toLocaleString('id-ID')} = Rp ${item.subtotal.toLocaleString('id-ID')}\n`;
+      const qtyStr = `${item.quantity}x ${item.variant.price.toLocaleString('id-ID')}`;
+      const totalStr = item.subtotal.toLocaleString('id-ID');
+      text += formatLine(`  ${qtyStr}`, totalStr);
     });
 
     text += "--------------------------------\n";
-    text += `Subtotal    : Rp ${subtotal.toLocaleString('id-ID')}\n`;
-    text += `PPN (11%)   : Rp ${tax.toLocaleString('id-ID')}\n`;
-    text += `Svc Chg(5%) : Rp ${serviceCharge.toLocaleString('id-ID')}\n`;
-    text += ESC_BOLD_ON + `GRAND TOTAL : Rp ${grandTotal.toLocaleString('id-ID')}\n` + ESC_BOLD_OFF;
+    text += formatLine("Subtotal", subtotal.toLocaleString('id-ID'));
+    text += formatLine("PPN (11%)", tax.toLocaleString('id-ID'));
+    text += formatLine("Svc Chg(5%)", serviceCharge.toLocaleString('id-ID'));
+    text += ESC_BOLD_ON + formatLine("TOTAL", `Rp ${grandTotal.toLocaleString('id-ID')}`) + ESC_BOLD_OFF;
     text += "--------------------------------\n";
-    text += `TENDER (${paymentMethod.toUpperCase()}): Rp ${tenderAmount.toLocaleString('id-ID')}\n`;
-    text += `CHANGE      : Rp ${change.toLocaleString('id-ID')}\n`;
+    text += formatLine(`TENDER (${paymentMethod})`, tenderAmount.toLocaleString('id-ID'));
+    text += formatLine("KEMBALI", change.toLocaleString('id-ID'));
     text += ESC_ALIGN_CENTER + "\nTerima Kasih Atas Kunjungan Anda!\n";
     text += "Powered by MyTRA POS\n\n\n" + GS_CUT;
 
