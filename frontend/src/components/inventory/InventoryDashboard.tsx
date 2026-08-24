@@ -9,6 +9,9 @@ export const InventoryDashboard: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ProductVariant | null>(null);
 
+  const [quickRestockTarget, setQuickRestockTarget] = useState<ProductVariant | null>(null);
+  const [quickRestockAmount, setQuickRestockAmount] = useState('');
+
   // Form State
   const [formData, setFormData] = useState({
     name: '',
@@ -79,17 +82,23 @@ export const InventoryDashboard: React.FC = () => {
     }
   };
 
-  const handleQuickRestock = (product: ProductVariant) => {
-    const amountStr = window.prompt(`Isi ulang stok untuk "${product.name}".\nStok saat ini: ${product.stock}\n\nMasukkan jumlah barang masuk (tambahan stok):`);
-    if (!amountStr) return;
+  const openQuickRestock = (product: ProductVariant) => {
+    setQuickRestockTarget(product);
+    setQuickRestockAmount('');
+  };
+
+  const handleQuickRestockSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!quickRestockTarget) return;
     
-    const amount = parseInt(amountStr, 10);
+    const amount = parseInt(quickRestockAmount, 10);
     if (isNaN(amount) || amount <= 0) {
       alert('Jumlah tidak valid! Harap masukkan angka yang benar.');
       return;
     }
     
-    updateProduct(product.id, { stock: product.stock + amount });
+    updateProduct(quickRestockTarget.id, { stock: quickRestockTarget.stock + amount });
+    setQuickRestockTarget(null);
   };
 
   return (
@@ -165,7 +174,7 @@ export const InventoryDashboard: React.FC = () => {
                   <td className="py-3 px-6 text-right">
                     <div className="flex items-center justify-end gap-2">
                       {p.stock <= 5 && (
-                        <button onClick={() => handleQuickRestock(p)} className="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-colors text-xs font-bold flex items-center gap-1 shadow-md shadow-rose-500/20" title="Isi Ulang Stok">
+                        <button onClick={() => openQuickRestock(p)} className="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-colors text-xs font-bold flex items-center gap-1 shadow-md shadow-rose-500/20" title="Isi Ulang Stok">
                           Restock Cepat
                         </button>
                       )}
@@ -228,6 +237,40 @@ export const InventoryDashboard: React.FC = () => {
               <div className="flex gap-3 pt-4 border-t border-slate-800">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-2.5 rounded-lg font-medium transition-colors">Batal</button>
                 <button type="submit" className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-bold transition-colors">Simpan Data</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Quick Restock Modal */}
+      {quickRestockTarget && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden p-6 text-center">
+            <div className="w-16 h-16 bg-rose-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Package className="text-rose-500" size={32} />
+            </div>
+            <h2 className="text-lg font-bold text-white mb-1">Isi Ulang Stok</h2>
+            <p className="text-sm text-slate-400 mb-6">
+              Stok saat ini untuk <span className="font-bold text-white">{quickRestockTarget.name}</span> adalah <strong className="text-rose-400">{quickRestockTarget.stock}</strong>
+            </p>
+            <form onSubmit={handleQuickRestockSubmit}>
+              <div className="mb-6">
+                <label className="block text-xs font-medium text-slate-400 mb-2 text-left">Jumlah Barang yang Masuk:</label>
+                <input 
+                  type="number" 
+                  min="1" 
+                  autoFocus
+                  required
+                  value={quickRestockAmount}
+                  onChange={(e) => setQuickRestockAmount(e.target.value)}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white font-bold text-center text-lg focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500"
+                  placeholder="Contoh: 50"
+                />
+              </div>
+              <div className="flex gap-3">
+                <button type="button" onClick={() => setQuickRestockTarget(null)} className="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-xl font-medium transition-colors">Batal</button>
+                <button type="submit" className="flex-1 bg-rose-500 hover:bg-rose-600 text-white py-3 rounded-xl font-bold transition-colors">Tambah Stok</button>
               </div>
             </form>
           </div>
