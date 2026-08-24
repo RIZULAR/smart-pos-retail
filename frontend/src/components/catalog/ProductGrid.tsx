@@ -67,7 +67,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ scanIndicator }) => {
               <div 
                 key={product.id}
                 onClick={() => !isOutOfStock && addItem(product)}
-                className={`bg-slate-800 rounded-xl border overflow-hidden transition-all flex flex-col h-full relative ${isOutOfStock ? 'opacity-50 cursor-not-allowed border-slate-800' : 'cursor-pointer group ' + (product.isLowStock ? 'border-rose-900/50 hover:border-rose-500/50 hover:shadow-[0_0_15px_rgba(244,63,94,0.1)]' : 'border-slate-700/50 hover:border-indigo-500/50 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)]')}`}
+                className={`bg-slate-800 rounded-xl border overflow-hidden transition-all flex flex-col h-full relative ${isOutOfStock ? 'opacity-50 cursor-not-allowed border-slate-800' : 'cursor-pointer group ' + (product.isLowStock ? 'border-amber-500/50 hover:border-amber-400 hover:shadow-[0_0_15px_rgba(251,191,36,0.15)]' : 'border-slate-700/50 hover:border-indigo-500/50 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)]')}`}
               >
                 <div className="aspect-square bg-slate-700/50 flex items-center justify-center relative overflow-hidden">
                   {isOutOfStock ? (
@@ -77,8 +77,8 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ scanIndicator }) => {
                       </span>
                     </div>
                   ) : product.isLowStock ? (
-                    <div className="absolute top-2 right-2 bg-rose-500/90 text-white backdrop-blur-sm px-2 py-1 rounded text-xs font-medium border border-rose-500/30 flex items-center gap-1 z-10">
-                      <AlertCircle size={12} /> Stock: {product.stock}
+                    <div className="absolute top-2 right-2 bg-amber-500/90 text-amber-50 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold border border-amber-400/50 flex items-center gap-1 z-10 shadow-lg shadow-amber-500/20">
+                      <AlertCircle size={12} /> Sisa: {product.stock}
                     </div>
                   ) : (
                     <div className="absolute top-2 right-2 bg-slate-900/80 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-slate-300 border border-slate-700 z-10">
