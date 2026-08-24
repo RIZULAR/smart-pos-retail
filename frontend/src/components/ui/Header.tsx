@@ -1,13 +1,15 @@
 import React from 'react';
-import { LogOut, ScanLine, WifiOff, RefreshCw } from 'lucide-react';
+import { LogOut, ScanLine, WifiOff, RefreshCw, LayoutDashboard, Store } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useOfflineQueue } from '../../hooks/useOfflineQueue';
 
 interface HeaderProps {
   scanIndicator: boolean;
+  activeTab: 'pos' | 'reports';
+  setActiveTab: (tab: 'pos' | 'reports') => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ scanIndicator }) => {
+export const Header: React.FC<HeaderProps> = ({ scanIndicator, activeTab, setActiveTab }) => {
   const { user, activeShift, logout, closeShift } = useAuthStore();
   const { queueCount, isOnline, syncQueue } = useOfflineQueue();
 
@@ -33,6 +35,23 @@ export const Header: React.FC<HeaderProps> = ({ scanIndicator }) => {
           <p className="text-xs text-slate-400">Cashier: {user?.fullName}</p>
         </div>
       </div>
+
+      {/* Navigation Tabs */}
+      <div className="flex items-center gap-2 bg-slate-900 p-1 rounded-xl border border-slate-700/50">
+        <button
+          onClick={() => setActiveTab('pos')}
+          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'pos' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}`}
+        >
+          <Store size={16} /> Terminal Kasir
+        </button>
+        <button
+          onClick={() => setActiveTab('reports')}
+          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'reports' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}`}
+        >
+          <LayoutDashboard size={16} /> Laporan & Analitik
+        </button>
+      </div>
+
       <div className="flex items-center gap-4">
         
         {/* Offline Queue Indicator */}

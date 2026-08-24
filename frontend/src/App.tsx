@@ -9,15 +9,17 @@ import { ProductGrid } from './components/catalog/ProductGrid';
 import { CartPanel } from './components/cart/CartPanel';
 import { LoginScreen } from './components/auth/LoginScreen';
 import { ShiftOpenModal } from './components/shift/ShiftOpenModal';
+import { ReportsDashboard } from './components/reports/ReportsDashboard';
 
 function App() {
   const { addItem } = useCartStore();
   const { user, activeShift } = useAuthStore();
   const [scanIndicator, setScanIndicator] = useState(false);
+  const [activeTab, setActiveTab] = useState<'pos' | 'reports'>('pos');
 
   // Global Hardware Barcode Scanner Listener
   useBarcodeScanner((barcode) => {
-    if (!user || !activeShift) return; // Only scan if logged in and shift open
+    if (!user || !activeShift || activeTab !== 'pos') return; // Only scan if on POS tab
 
     // Flash indicator
     setScanIndicator(true);
@@ -46,18 +48,34 @@ function App() {
     );
   }
 
-  // 3. Otherwise, show main POS Interface
+  // 3. Otherwise, show main Interface
   return (
-    <div className="flex h-screen bg-slate-900 text-slate-100 overflow-hidden font-sans">
+    <div className="flex flex-col h-screen bg-slate-900 text-slate-100 overflow-hidden font-sans">
       
-      {/* LEFT COLUMN: Catalog & Products */}
-      <div className="flex-1 flex flex-col min-w-[60%] border-r border-slate-700/50">
-        <Header scanIndicator={scanIndicator} />
-        <ProductGrid scanIndicator={scanIndicator} />
-      </div>
+      {/* Top Navigation Header */}
+      <Header 
+        scanIndicator={scanIndicator} 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab} 
+      />
 
-      {/* RIGHT COLUMN: Cart & Checkout */}
-      <CartPanel />
+      {/* Main Content Area */}
+      <div className="flex flex-1 overflow-hidden">
+        {activeTab === 'pos' ? (
+          <>
+            {/* LEFT COLUMN: Catalog & Products */}
+            <div className="flex-1 flex flex-col min-w-[60%] border-r border-slate-700/50">
+              <ProductGrid scanIndicator={scanIndicator} />
+            </div>
+
+            {/* RIGHT COLUMN: Cart & Checkout */}
+            <CartPanel />
+          </>
+        ) : (
+          /* Reports & Analytics Dashboard */
+          <ReportsDashboard />
+        )}
+      </div>
 
     </div>
   );
