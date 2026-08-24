@@ -3,8 +3,9 @@ import { X, CheckCircle, Printer, Wallet } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useCartStore } from '../../store/useCartStore';
 import { useThermalPrinter } from '../../hooks/useThermalPrinter';
-import { useOfflineQueue } from '../../hooks/useOfflineQueue';
 import { useAuthStore } from '../../store/useAuthStore';
+import { useProductStore } from '../../store/useProductStore';
+import { supabase } from '../../lib/supabaseClient';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -14,7 +15,6 @@ interface PaymentModalProps {
 export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   const { items, subtotal, tax, serviceCharge, grandTotal, clearCart } = useCartStore();
   const { generateReceipt, printReceipt } = useThermalPrinter();
-  const { enqueueOrder } = useOfflineQueue();
   
   const [tenderAmount, setTenderAmount] = useState<string>('');
   const [paymentMethod, setPaymentMethod] = useState<'CASH' | 'QRIS' | 'DEBIT'>('CASH');
@@ -55,23 +55,48 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) =
     const bytecode = generateReceipt(items, subtotal, tax, serviceCharge, grandTotal, actualTender, change, paymentMethod);
     await printReceipt(bytecode);
     
-    // Enqueue to Offline Queue
+    // Save directly to Supabase Cloud Database
     const user = useAuthStore.getState().user;
     const activeShift = useAuthStore.getState().activeShift;
-    
-    await enqueueOrder({
-      id: `ord-${Date.now()}`,
-      items: [...items],
-      subtotal,
-      tax,
-      grandTotal,
-      tenderAmount: actualTender,
-      change,
-      paymentMethod,
-      shiftId: activeShift?.id || '',
-      cashierId: user?.id || '',
-      createdAt: new Date().toISOString()
-    });
+    const invoiceNum = `INV-${Date.now().toString().slice(-6)}`;
+    const createdAt = new Date().toISOString();
+
+    const cashierIdClean = user?.id && user.id.trim() !== '' ? user.id : null;
+    const shiftIdClean = activeShift?.id && activeShift.id.trim() !== '' ? activeShift.id : null;
+
+    try {
+      const { data: txData, error: txError } = await supabase
+        .from('transactions')
+        .insert({
+          invoice_number: invoiceNum,
+          shift_id: shiftIdClean,
+          cashier_id: cashierIdClean,
+          subtotal,
+          tax,
+          grand_total: grandTotal,
+          payment_method: paymentMethod,
+          tender_amount: actualTender,
+          change_amount: change,
+          created_at: createdAt
+        })
+        .select('id')
+        .single();
+
+      if (txError) {
+        console.error("Direct Supabase save error:", txError);
+      } else if (txData && items.length > 0) {
+        const itemsToInsert = items.map(item => ({
+          transaction_id: txData.id,
+          variant_id: item.variant.id,
+          quantity: item.quantity,
+          price_at_time: item.variant.price,
+          subtotal: item.subtotal
+        }));
+        await supabase.from('transaction_items').insert(itemsToInsert);
+      }
+    } catch (e) {
+      console.error("Failed to save transaction to Supabase:", e);
+    }
 
     // Deduct stock in store
     useProductStore.getState().deductStock(items);

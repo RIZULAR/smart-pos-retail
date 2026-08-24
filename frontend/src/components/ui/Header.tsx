@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { LogOut, ScanLine, WifiOff, RefreshCw, LayoutDashboard, Store, Settings } from 'lucide-react';
+import { LogOut, ScanLine, LayoutDashboard, Store, Settings } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
-import { useOfflineQueue } from '../../hooks/useOfflineQueue';
 import { SettingsModal } from './SettingsModal';
 
 interface HeaderProps {
@@ -12,7 +11,6 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ scanIndicator, activeTab, setActiveTab }) => {
   const { user, activeShift, logout, closeShift } = useAuthStore();
-  const { queueCount, isOnline, syncQueue } = useOfflineQueue();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const handleLogout = () => {
@@ -56,19 +54,6 @@ export const Header: React.FC<HeaderProps> = ({ scanIndicator, activeTab, setAct
 
       <div className="flex items-center gap-4">
         
-        {/* Offline Queue Indicator */}
-        {queueCount > 0 && (
-          <div className="flex items-center gap-2 bg-rose-500/10 px-3 py-1.5 rounded-full text-sm border border-rose-500/20 text-rose-400">
-            {!isOnline ? <WifiOff size={14} /> : <RefreshCw size={14} className="animate-spin" />}
-            <span className="font-semibold">{queueCount} Pending</span>
-            {isOnline && (
-              <button onClick={syncQueue} className="ml-2 text-xs bg-rose-500/20 hover:bg-rose-500/30 px-2 py-0.5 rounded transition-colors">
-                Sync Now
-              </button>
-            )}
-          </div>
-        )}
-
         {/* Settings Button */}
         <button 
           onClick={() => setIsSettingsOpen(true)}
