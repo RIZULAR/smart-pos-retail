@@ -10,12 +10,18 @@ import { CartPanel } from './components/cart/CartPanel';
 import { LoginScreen } from './components/auth/LoginScreen';
 import { ShiftOpenModal } from './components/shift/ShiftOpenModal';
 import { ReportsDashboard } from './components/reports/ReportsDashboard';
+import { CustomerMenu } from './components/customer/CustomerMenu';
 
 function App() {
   const { addItem } = useCartStore();
   const { user, activeShift } = useAuthStore();
   const [scanIndicator, setScanIndicator] = useState(false);
   const [activeTab, setActiveTab] = useState<'pos' | 'reports'>('pos');
+
+  // Simple routing for Customer E-Menu
+  if (window.location.pathname === '/menu') {
+    return <CustomerMenu />;
+  }
 
   // Global Hardware Barcode Scanner Listener
   useBarcodeScanner((barcode) => {

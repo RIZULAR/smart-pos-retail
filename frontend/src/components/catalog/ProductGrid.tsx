@@ -38,7 +38,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ scanIndicator }) => {
         </div>
         
         <div className="flex gap-2 mt-4 overflow-x-auto pb-2 scrollbar-hide">
-          {['All Items', 'Clothing', 'Shoes', 'Accessories', 'Electronics'].map((cat, i) => (
+          {['Semua Menu', 'Makanan Utama', 'Minuman', 'Cemilan', 'Dessert'].map((cat, i) => (
             <button 
               key={cat} 
               className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${i === 0 ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700'}`}
@@ -59,17 +59,17 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ scanIndicator }) => {
               onClick={() => addItem(product)}
               className={`bg-slate-800 rounded-xl border overflow-hidden transition-all cursor-pointer group flex flex-col h-full relative ${product.isLowStock ? 'border-rose-900/50 hover:border-rose-500/50 hover:shadow-[0_0_15px_rgba(244,63,94,0.1)]' : 'border-slate-700/50 hover:border-indigo-500/50 hover:shadow-[0_0_15px_rgba(99,102,241,0.1)]'}`}
             >
-              <div className="aspect-square bg-slate-700/50 flex items-center justify-center p-4 relative">
+              <div className="aspect-square bg-slate-700/50 flex items-center justify-center relative overflow-hidden">
                 {product.isLowStock ? (
-                  <div className="absolute top-2 right-2 bg-rose-500/20 text-rose-400 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium border border-rose-500/30 flex items-center gap-1">
+                  <div className="absolute top-2 right-2 bg-rose-500/90 text-white backdrop-blur-sm px-2 py-1 rounded text-xs font-medium border border-rose-500/30 flex items-center gap-1 z-10">
                     <AlertCircle size={12} /> Stock: {product.stock}
                   </div>
                 ) : (
-                  <div className="absolute top-2 right-2 bg-slate-900/80 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-slate-300 border border-slate-700">
+                  <div className="absolute top-2 right-2 bg-slate-900/80 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-slate-300 border border-slate-700 z-10">
                     Stock: {product.stock}
                   </div>
                 )}
-                <img src={product.imageUrl} alt={product.name} className="object-contain h-full w-full rounded-md group-hover:scale-105 transition-transform duration-300" />
+                <img src={product.imageUrl} alt={product.name} className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300" />
               </div>
               <div className="p-4 flex flex-col flex-1">
                 <h3 className="font-medium text-slate-200 line-clamp-2 text-sm">{product.name}</h3>
