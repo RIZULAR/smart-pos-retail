@@ -9,6 +9,15 @@ export const InventoryDashboard: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ProductVariant | null>(null);
 
+  const [alert, setAlert] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+
+  const showAlert = (type: 'success' | 'error', message: string) => {
+    setAlert({ type, message });
+    setTimeout(() => {
+      setAlert(null);
+    }, 1500); // ilang otomatis dalam 1 1/2 detik
+  };
+
   const [quickRestockTarget, setQuickRestockTarget] = useState<ProductVariant | null>(null);
   const [quickRestockAmount, setQuickRestockAmount] = useState('');
 
@@ -63,6 +72,7 @@ export const InventoryDashboard: React.FC = () => {
         stock: Number(formData.stock),
         imageUrl: formData.imageUrl,
       });
+      showAlert('success', 'Produk berhasil diperbarui!');
     } else {
       addProduct({
         name: formData.name,
@@ -72,6 +82,7 @@ export const InventoryDashboard: React.FC = () => {
         stock: Number(formData.stock),
         imageUrl: formData.imageUrl,
       });
+      showAlert('success', 'Produk baru berhasil ditambahkan!');
     }
     setIsModalOpen(false);
   };
@@ -79,6 +90,7 @@ export const InventoryDashboard: React.FC = () => {
   const handleDelete = (id: string) => {
     if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
       deleteProduct(id);
+      showAlert('success', 'Produk berhasil dihapus.');
     }
   };
 
@@ -93,12 +105,13 @@ export const InventoryDashboard: React.FC = () => {
     
     const amount = parseInt(quickRestockAmount, 10);
     if (isNaN(amount) || amount <= 0) {
-      alert('Jumlah tidak valid! Harap masukkan angka yang benar.');
+      showAlert('error', 'Jumlah tidak valid!');
       return;
     }
     
     updateProduct(quickRestockTarget.id, { stock: quickRestockTarget.stock + amount });
     setQuickRestockTarget(null);
+    showAlert('success', 'Stok berhasil ditambahkan!');
   };
 
   return (
@@ -281,6 +294,33 @@ export const InventoryDashboard: React.FC = () => {
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {alert && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-top-4 duration-300">
+          {alert.type === 'success' ? (
+            <div className="bg-emerald-50 text-sm p-4 rounded-xl border-2 border-emerald-200 shadow-2xl min-w-[300px]" role="alert">
+              <div className="flex items-center gap-3 text-emerald-900 font-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 fill-current" viewBox="0 0 330 330" aria-hidden="true">
+                  <path d="M165 0C74.019 0 0 74.019 0 165s74.019 165 165 165 165-74.019 165-165S255.981 0 165 0m0 300c-74.44 0-135-60.561-135-135S90.56 30 165 30s135 60.561 135 135-60.561 135-135 135" />
+                  <path d="m226.872 106.664-84.854 84.853-38.89-38.891c-5.857-5.857-15.355-5.858-21.213-.001-5.858 5.858-5.858 15.355 0 21.213l49.496 49.498a15 15 0 0 0 10.606 4.394h.001c3.978 0 7.793-1.581 10.606-4.393l95.461-95.459c5.858-5.858 5.858-15.355 0-21.213s-15.355-5.859-21.213-.001" />
+                </svg>
+                <p>{alert.message}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-rose-50 text-sm p-4 rounded-xl border-2 border-rose-200 shadow-2xl min-w-[300px]" role="alert">
+              <div className="flex items-center gap-3 text-rose-900 font-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 fill-current" viewBox="0 0 512 512" aria-hidden="true">
+                  <path d="M256 0C114.508 0 0 114.497 0 256c0 141.493 114.497 256 256 256 141.492 0 256-114.497 256-256C512 114.507 397.503 0 256 0m0 472c-119.384 0-216-96.607-216-216 0-119.385 96.607-216 216-216 119.384 0 216 96.607 216 216 0 119.385-96.607 216-216 216" />
+                  <path d="M343.586 315.302 284.284 256l59.302-59.302c7.81-7.81 7.811-20.473.001-28.284-7.812-7.811-20.475-7.81-28.284 0L256 227.716l-59.303-59.302c-7.809-7.811-20.474-7.811-28.284 0s-7.81 20.474.001 28.284L227.716 256l-59.302 59.302c-7.811 7.811-7.812 20.474-.001 28.284 7.813 7.812 20.476 7.809 28.284 0L256 284.284l59.303 59.302c7.808 7.81 20.473 7.811 28.284 0s7.81-20.474-.001-28.284" />
+                </svg>
+                <p>{alert.message}</p>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
